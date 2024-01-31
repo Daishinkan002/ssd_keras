@@ -19,8 +19,11 @@ limitations under the License.
 from __future__ import division
 import numpy as np
 import keras.backend as K
-from keras.engine.topology import InputSpec
-from keras.engine.topology import Layer
+# from keras.engine.topology import InputSpec
+# from keras.engine.topology import Layer
+
+from tensorflow.keras.layers import InputSpec
+from tensorflow.keras.layers import Layer
 
 class L2Normalization(Layer):
     '''
@@ -44,7 +47,9 @@ class L2Normalization(Layer):
     '''
 
     def __init__(self, gamma_init=20, **kwargs):
-        if K.image_dim_ordering() == 'tf':
+        # if K.image_dim_ordering() == 'tf':
+        #     self.axis = 3
+        if K.image_data_format() == 'channels_last': # CHANGES BY SHANTANU
             self.axis = 3
         else:
             self.axis = 1
@@ -55,7 +60,8 @@ class L2Normalization(Layer):
         self.input_spec = [InputSpec(shape=input_shape)]
         gamma = self.gamma_init * np.ones((input_shape[self.axis],))
         self.gamma = K.variable(gamma, name='{}_gamma'.format(self.name))
-        self.trainable_weights = [self.gamma]
+        # self.trainable_weights = [self.gamma]
+        self._trainable_weights = [self.gamma]
         super(L2Normalization, self).build(input_shape)
 
     def call(self, x, mask=None):
