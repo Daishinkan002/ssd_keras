@@ -150,6 +150,7 @@ classes = ['background',
            'horse', 'motorbike', 'person', 'pottedplant',
            'sheep', 'sofa', 'train', 'tvmonitor']
 
+'''
 train_dataset.parse_xml(images_dirs=[VOC_2007_images_dir,
                                      VOC_2012_images_dir],
                         image_set_filenames=[VOC_2007_trainval_image_set_filename,
@@ -170,6 +171,28 @@ val_dataset.parse_xml(images_dirs=[VOC_2007_images_dir],
                       exclude_truncated=False,
                       exclude_difficult=True,
                       ret=False)
+'''
+
+
+train_dataset.parse_xml(images_dirs=[VOC_2007_images_dir],
+                        image_set_filenames=[VOC_2007_trainval_image_set_filename],
+                        annotations_dirs=[VOC_2007_annotations_dir],
+                        classes=classes,
+                        include_classes='all',
+                        exclude_truncated=False,
+                        exclude_difficult=False,
+                        ret=False)
+
+val_dataset.parse_xml(images_dirs=[VOC_2007_images_dir],
+                      image_set_filenames=[VOC_2007_test_image_set_filename],
+                      annotations_dirs=[VOC_2007_annotations_dir],
+                      classes=classes,
+                      include_classes='all',
+                      exclude_truncated=False,
+                      exclude_difficult=True,
+                      ret=False)
+
+
 
 # Optional: Convert the dataset into an HDF5 dataset. This will require more disk space, but will
 # speed up the training. Doing this is not relevant in case you activated the `load_images_into_memory`
@@ -307,7 +330,7 @@ callbacks = [model_checkpoint,
 
 # If you're resuming a previous training, set `initial_epoch` and `final_epoch` accordingly.
 initial_epoch   = 0
-final_epoch     = 120
+final_epoch     = 4
 steps_per_epoch = 1000
 
 history = model.fit_generator(generator=train_generator,

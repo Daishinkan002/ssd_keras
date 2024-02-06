@@ -411,7 +411,7 @@ class DataGenerator:
                   exclude_truncated=False,
                   exclude_difficult=False,
                   ret=False,
-                  verbose=True):
+                  verbose=True, length=None):
         '''
         This is an XML parser for the Pascal VOC datasets. It might be applicable to other datasets with minor changes to
         the code, but in its current form it expects the data format and XML tags of the Pascal VOC datasets.
@@ -465,6 +465,10 @@ class DataGenerator:
             with open(image_set_filename) as f:
                 image_ids = [line.strip() for line in f] # Note: These are strings, not integers.
                 self.image_ids += image_ids
+
+            if(length):
+                image_ids = image_ids[:length]
+                # self.image_ids = self.image_ids[:length]
 
             if verbose: it = tqdm(image_ids, desc="Processing image set '{}'".format(os.path.basename(image_set_filename)), file=sys.stdout)
             else: it = image_ids
@@ -529,6 +533,7 @@ class DataGenerator:
         self.dataset_size = len(self.filenames)
         self.dataset_indices = np.arange(self.dataset_size, dtype=np.int32)
         if self.load_images_into_memory:
+            print("Loading images into memory ")
             self.images = []
             if verbose: it = tqdm(self.filenames, desc='Loading images into memory', file=sys.stdout)
             else: it = self.filenames
